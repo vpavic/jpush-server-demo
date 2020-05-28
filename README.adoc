@@ -1,0 +1,27 @@
+= JPush Demo Server
+
+== Prerequisites
+
+* Git
+* Java 11
+* https://www.jiguang.cn/accounts/register[JPush developer account]
+
+== Building the project
+
+[source,bash]
+----
+$ git clone git@github.com:vpavic/jpush-server-demo.git
+$ cd jpush-server-demo
+$ ./gradlew build
+----
+
+== Running the demo server
+
+[source,bash]
+----
+$ java -jar build/libs/jpush-server-demo.jar --jpush.masterSecret=... --jpush.appKey=...
+----
+
+== Invoking the operations
+
+Use any JMX client to access the `demo.JPushDemoApplication` MBean and invoke its operations.
