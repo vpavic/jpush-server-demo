@@ -34,43 +34,29 @@ public class JPushDemoApplication {
     }
 
     @ManagedOperation
-    public String subscribe(String registrationId, String tag) {
-        try {
-            DefaultResult result = this.jPushClient.updateDeviceTagAlias(registrationId, null, Set.of(tag), Set.of());
-            return result.toString();
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    public String subscribe(String registrationId, String tag) throws Exception {
+        DefaultResult result = this.jPushClient.updateDeviceTagAlias(registrationId, null, Set.of(tag), Set.of());
+        return result.toString();
     }
 
     @ManagedOperation
-    public String pushToRegistrationId(String title, String content, String registrationId) {
-        return push(title, content, Audience.registrationId(registrationId));
+    public String pushToRegistrationId(String title, String content, String registrationId) throws Exception {
+        PushResult result = this.jPushClient.sendMessageWithRegistrationID(title, content, registrationId);
+        return result.toString();
     }
 
     @ManagedOperation
-    public String pushToTag(String title, String content, String tag) {
-        return push(title, content, Audience.tag(tag));
-    }
-
-    private String push(String title, String content, Audience audience) {
-        Message message = Message.newBuilder()
-                .setTitle(title)
-                .setMsgContent(content)
-                .build();
+    public String pushToTag(String title, String content, String tag) throws Exception {
         PushPayload payload = PushPayload.newBuilder()
                 .setPlatform(Platform.all())
-                .setAudience(audience)
-                .setMessage(message)
+                .setAudience(Audience.tag(tag))
+                .setMessage(Message.newBuilder()
+                        .setTitle(title)
+                        .setMsgContent(content)
+                        .build())
                 .build();
-        try {
-            PushResult result = this.jPushClient.sendPush(payload);
-            return result.toString();
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+        PushResult result = this.jPushClient.sendPush(payload);
+        return result.toString();
     }
 
     @ConfigurationProperties(prefix = "jpush")
