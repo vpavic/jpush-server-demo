@@ -3,6 +3,9 @@ package demo;
 import java.util.Objects;
 import java.util.Set;
 
+import cn.jiguang.common.ClientConfig;
+import cn.jiguang.common.ServiceHelper;
+import cn.jiguang.common.connection.ApacheHttpClient;
 import cn.jiguang.common.resp.DefaultResult;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.PushResult;
@@ -26,7 +29,10 @@ public class JPushDemoApplication {
     private final JPushClient jPushClient;
 
     public JPushDemoApplication(JPushProperties properties) {
-        this.jPushClient = new JPushClient(properties.masterSecret, properties.appKey);
+        ClientConfig clientConfig = ClientConfig.getInstance();
+        this.jPushClient = new JPushClient(properties.masterSecret, properties.appKey, null, clientConfig);
+        String authCode = ServiceHelper.getBasicAuthorization(properties.appKey, properties.masterSecret);
+        this.jPushClient.getPushClient().setHttpClient(new ApacheHttpClient(authCode, null, clientConfig));
     }
 
     public static void main(String[] args) {
