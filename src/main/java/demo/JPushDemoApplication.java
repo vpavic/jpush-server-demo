@@ -41,15 +41,18 @@ public class JPushDemoApplication {
 
     @ManagedOperation
     public String pushToRegistrationId(String title, String content, String registrationId) throws Exception {
-        PushResult result = this.jPushClient.sendMessageWithRegistrationID(title, content, registrationId);
-        return result.toString();
+        return push(title, content, Audience.registrationId(registrationId));
     }
 
     @ManagedOperation
     public String pushToTag(String title, String content, String tag) throws Exception {
+        return push(title, content, Audience.tag(tag));
+    }
+
+    private String push(String title, String content, Audience audience) throws Exception {
         PushPayload payload = PushPayload.newBuilder()
                 .setPlatform(Platform.all())
-                .setAudience(Audience.tag(tag))
+                .setAudience(audience)
                 .setMessage(Message.newBuilder()
                         .setTitle(title)
                         .setMsgContent(content)
