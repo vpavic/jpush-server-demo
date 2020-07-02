@@ -52,7 +52,7 @@ public class JPushDemoApplication {
 
     @ManagedOperation
     public String pushToTag(String title, String content, String tag) throws Exception {
-        return push(title, content, Audience.tag(tag));
+        return push(title, content, Audience.tag_and(tag));
     }
 
     private String push(String title, String content, Audience audience) throws Exception {
