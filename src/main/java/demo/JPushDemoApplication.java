@@ -35,6 +35,12 @@ public class JPushDemoApplication {
     public JPushDemoApplication(JPushProperties properties) {
         ClientConfig clientConfig = ClientConfig.getInstance();
         this.jPushClient = new JPushClient(properties.masterSecret, properties.appKey, null, clientConfig);
+        // By default, JPushClient uses a java.net based HTTP client with no convenient way of replacing the HTTP client
+        // implementation.
+        // Below is an example of how to replace the default NativeHttpClient with ApacheHttpClient (other options are
+        // OkHttp based Http2Client and NettyHttpClient).
+        // Note that the HTTP client can only be replaced for PushClient, but not ReportClient, DeviceClient and
+        // ScheduleClient.
         String authCode = ServiceHelper.getBasicAuthorization(properties.appKey, properties.masterSecret);
         this.jPushClient.getPushClient().setHttpClient(new ApacheHttpClient(authCode, null, clientConfig));
     }
@@ -80,16 +86,16 @@ public class JPushDemoApplication {
     @ConfigurationProperties(prefix = "jpush")
     static class JPushProperties {
 
-        private final String masterSecret;
-
         private final String appKey;
+
+        private final String masterSecret;
 
         @ConstructorBinding
         public JPushProperties(String masterSecret, String appKey) {
-            Objects.requireNonNull(masterSecret, "masterSecret must not be null");
             Objects.requireNonNull(appKey, "appKey must not be null");
-            this.masterSecret = masterSecret;
+            Objects.requireNonNull(masterSecret, "masterSecret must not be null");
             this.appKey = appKey;
+            this.masterSecret = masterSecret;
         }
 
     }
