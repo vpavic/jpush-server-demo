@@ -91,7 +91,7 @@ public class JPushDemoApplication {
         private final String masterSecret;
 
         @ConstructorBinding
-        public JPushProperties(String masterSecret, String appKey) {
+        public JPushProperties(String appKey, String masterSecret) {
             Objects.requireNonNull(appKey, "appKey must not be null");
             Objects.requireNonNull(masterSecret, "masterSecret must not be null");
             this.appKey = appKey;
