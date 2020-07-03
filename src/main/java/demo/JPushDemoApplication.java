@@ -13,6 +13,10 @@ import cn.jpush.api.push.model.Message;
 import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.notification.AndroidNotification;
+import cn.jpush.api.push.model.notification.IosNotification;
+import cn.jpush.api.push.model.notification.Notification;
+import cn.jpush.api.push.model.notification.PlatformNotification;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -59,9 +63,14 @@ public class JPushDemoApplication {
         PushPayload payload = PushPayload.newBuilder()
                 .setPlatform(Platform.all())
                 .setAudience(audience)
-                .setMessage(Message.newBuilder()
-                        .setTitle(title)
-                        .setMsgContent(content)
+                .setNotification(Notification.newBuilder()
+                        .addPlatformNotification(AndroidNotification.newBuilder()
+                                .setTitle(title)
+                                .setAlert(content)
+                                .build())
+                        .addPlatformNotification(IosNotification.newBuilder()
+                                .setAlert(content)
+                                .build())
                         .build())
                 .build();
         PushResult result = this.jPushClient.sendPush(payload);
